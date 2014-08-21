@@ -1,0 +1,1 @@
+copy "lib\\parseUri.js"+"lib\\modernizr-1.5.min.js"+jquery.min.js+"lib\\Stats.js"+App.js+Model.js+Settings.js+Keys.js+WebSocketService.js+Camera.js+Tadpole.js+TadpoleTail.js+Message.js+WaterParticle.js+Arrow.js+Cookie.js+main.js all.js /b

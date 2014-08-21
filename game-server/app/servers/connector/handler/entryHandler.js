@@ -7,7 +7,7 @@ var Handler = function(app) {
 };
 
 var handler = Handler.prototype;
-
+var crc = require('crc');
 /**
  * New client entry chat server.
  *
@@ -19,7 +19,8 @@ var handler = Handler.prototype;
 handler.enter = function(msg, session, next) {
 	var self = this;
 	var rid = msg.rid;
-	var uid = msg.username + '*' + rid
+	var sid = crc.crc32(msg.username) & 0xFFFFFF;
+	var uid = msg.username + '*' + rid + '*' + sid;
 	var sessionService = self.app.get('sessionService');
 
 	//duplicate log in

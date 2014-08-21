@@ -1,4 +1,5 @@
 var chatRemote = require('../remote/chatRemote');
+var crc = require('crc');
 
 module.exports = function(app) {
 	return new Handler(app);
@@ -18,15 +19,17 @@ var handler = Handler.prototype;
  * @param  {Function} next next stemp callback
  *
  */
-handler.send = function(msg, session, next) {
+handler.message = function(msg, session, next) {
 	var rid = session.get('rid');
-	var username = session.uid.split('*')[0];
+	var uids = session.uid.split('*');
+	var username = uids[0];
 	var channelService = this.app.get('channelService');
 	var param = {
-		route: 'onChat',
-		msg: msg.content,
-		from: username,
-		target: msg.target
+		route: 'message',
+		id: parseInt(uids[2]),
+		from: msg.from,
+		msg: msg.msg,
+		target: msg.target,
 	};
 	channel = channelService.getChannel(rid, false);
 
@@ -47,3 +50,27 @@ handler.send = function(msg, session, next) {
 		route: msg.route
 	});
 };
+
+handler.update = function(msg, session, next){
+	var rid = session.get('rid');
+	var uids = session.uid.split('*');
+	var username = uids[0];
+	var channelService = this.app.get('channelService');
+	var param = {
+		route: 'update',
+		id: parseInt(uids[2]),
+		angle: msg.angle,
+		momentum: msg.momentum,
+		x: msg.x,
+		y: msg.y,
+		life: 1,
+		name: msg.name,
+		authorized: false,
+		sex: msg.sex
+	};
+	channel = channelService.getChannel(rid, false);
+	channel.pushMessage(param);
+	next(null, {
+		route: msg.route
+	});	
+}
